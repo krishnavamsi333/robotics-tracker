@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics & Embedded Roadmap</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🤖 Robotics Engineer Roadmap</h1>
+            <p>12-Month Mastery Plan</p>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <p id="progressText">0% Completed</p>
+        </header>
+
+        <section class="phase">
+            <h2>Months 1–3: Strong Foundations</h2>
+            <div class="task-group">
+                <h3>Python</h3>
+                <label><input type="checkbox" id="task1"> Basics & OOP</label>
+                <label><input type="checkbox" id="task2"> Multithreading basics</label>
+            </div>
+            <div class="task-group">
+                <h3>C++</h3>
+                <label><input type="checkbox" id="task3"> Pointers & Memory Management</label>
+                <label><input type="checkbox" id="task4"> OOP Concepts</label>
+                <label><input type="checkbox" id="task5"> STL (Standard Template Library)</label>
+            </div>
+            <div class="task-group">
+                <h3>Linux & Git</h3>
+                <label><input type="checkbox" id="task6"> Ubuntu Command Line & Shell Basics</label>
+                <label><input type="checkbox" id="task7"> Git: Clone, Commit, Push</label>
+                <label><input type="checkbox" id="task8"> Git: Branching & Pull Requests</label>
+            </div>
+        </section>
+
+        <section class="phase">
+            <h2>Months 4–6: ROS 2 + Core Robotics</h2>
+            <div class="task-group">
+                <h3>ROS 2 (Deep Level)</h3>
+                <label><input type="checkbox" id="task9"> Node Lifecycle & Launch Files</label>
+                <label><input type="checkbox" id="task10"> Topics, Services, Actions</label>
+                <label><input type="checkbox" id="task11"> TF2 & Parameters</label>
+                <label><input type="checkbox" id="task12"> RViz & Gazebo/Ignition Simulation</label>
+            </div>
+            <div class="task-group">
+                <h3>Projects</h3>
+                <label><input type="checkbox" id="task13"> Sim: Differential Drive Robot</label>
+                <label><input type="checkbox" id="task14"> Sim: Teleop + Mapping Demo</label>
+            </div>
+            <div class="task-group">
+                <h3>Robotics Theory</h3>
+                <label><input type="checkbox" id="task15"> Coordinate Frames & Kinematics</label>
+                <label><input type="checkbox" id="task16"> PID Control & Odometry</label>
+            </div>
+        </section>
+
+        <section class="phase">
+            <h2>Months 7–9: Embedded + Hardware</h2>
+            <div class="task-group">
+                <h3>Microcontroller (STM32/ESP32)</h3>
+                <label><input type="checkbox" id="task17"> Bare Metal + HAL</label>
+                <label><input type="checkbox" id="task18"> Timers, PWM, Interrupts</label>
+                <label><input type="checkbox" id="task19"> Comms: UART, I2C, SPI, CAN</label>
+            </div>
+            <div class="task-group">
+                <h3>Control & ROS 2 Embedded</h3>
+                <label><input type="checkbox" id="task20"> DC Motor Control (Encoder + PID)</label>
+                <label><input type="checkbox" id="task21"> micro-ROS Basics</label>
+                <label><input type="checkbox" id="task22"> Real Hardware: ROS 2 Node Motor Control</label>
+            </div>
+        </section>
+
+        <section class="phase">
+            <h2>Months 10–12: Advanced + Job Ready</h2>
+            <div class="task-group">
+                <h3>Advanced Topics</h3>
+                <label><input type="checkbox" id="task23"> Nav2 (Autonomous Navigation)</label>
+                <label><input type="checkbox" id="task24"> SLAM or OpenCV (Vision)</label>
+                <label><input type="checkbox" id="task25"> Sensor Fusion (IMU + Encoders)</label>
+            </div>
+            <div class="task-group">
+                <h3>Final Portfolio Projects</h3>
+                <label><input type="checkbox" id="task26"> Project 1: Mapping + Navigation Robot</label>
+                <label><input type="checkbox" id="task27"> Project 2: Embedded Motor Control System</label>
+                <label><input type="checkbox" id="task28"> Project 3: Autonomous Obstacle Avoidance</label>
+                <label><input type="checkbox" id="task29"> Publish all Code to GitHub</label>
+            </div>
+        </section>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
