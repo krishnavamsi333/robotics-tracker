@@ -3,474 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MISSION CONTROL: Robotics</title>
+    <title>FlowBoard // CLOUD_OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* --- CORE TERMINAL THEME --- */
-        :root {
-            --bg-color: #050505;        /* Pure Black */
-            --panel-bg: rgba(20, 20, 20, 0.95);
-            --neon-blue: #00f3ff;       /* Cyber Cyan */
-            --neon-green: #0aff00;      /* Terminal Green */
-            --neon-red: #ff003c;        /* Alert Red */
-            --text-main: #e0e0e0;
-            --text-dim: #6e6e6e;
-            --border-glow: 0 0 10px rgba(0, 243, 255, 0.2);
-            --font-code: 'Fira Code', monospace;
-            --font-header: 'Orbitron', sans-serif;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-color);
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px; /* Grid effect */
-            color: var(--text-main);
-            font-family: var(--font-code);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-            position: relative;
-        }
-
-        /* --- HUD HEADER --- */
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            border-bottom: 2px solid var(--neon-blue);
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        header::after {
-            content: "SYSTEM_ONLINE";
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-size: 0.7rem;
-            color: var(--neon-green);
-            animation: blink 2s infinite;
-        }
-
-        h1 {
-            font-family: var(--font-header);
-            font-size: 2.8rem;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px var(--neon-blue);
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: var(--neon-blue);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* --- CYBER PROGRESS BAR --- */
-        .progress-box {
-            background: #000;
-            border: 1px solid #333;
-            padding: 5px;
-            margin-top: 20px;
-            position: relative;
-            box-shadow: var(--border-glow);
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: #111;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--neon-green);
-            width: 0%;
-            box-shadow: 0 0 15px var(--neon-green);
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--neon-blue);
-            margin-top: 8px;
-            font-family: var(--font-header);
-        }
-
-        /* --- INPUT COMMAND LINE --- */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 40px;
-            border: 1px solid #333;
-            background: #0a0a0a;
-            padding: 15px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            flex-wrap: wrap;
-        }
-
-        .input-group::before {
-            content: ">";
-            color: var(--neon-green);
-            font-weight: bold;
-            font-size: 1.2rem;
-            align-self: center;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--neon-green);
-            font-family: var(--font-code);
-            font-size: 1rem;
-            outline: none;
-            min-width: 200px;
-        }
-
-        input[type="text"]::placeholder { color: #333; }
-
-        select {
-            background: #111;
-            color: var(--neon-blue);
-            border: 1px solid #333;
-            padding: 10px;
-            font-family: var(--font-code);
-            cursor: pointer;
-            outline: none;
-        }
-
-        .add-btn {
-            background: transparent;
-            color: var(--neon-blue);
-            border: 1px solid var(--neon-blue);
-            padding: 10px 25px;
-            font-family: var(--font-header);
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
-        }
-
-        .add-btn:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        /* --- TASK TERMINAL UI --- */
-        .phase-section {
-            margin-bottom: 40px;
-            border-left: 2px solid #222;
-            padding-left: 20px;
-        }
-
-        .phase-header {
-            color: var(--neon-blue);
-            font-family: var(--font-header);
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .phase-header::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, #222, transparent);
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid transparent;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .task-item:hover {
-            background: rgba(0, 243, 255, 0.05);
-            border-color: rgba(0, 243, 255, 0.3);
-            transform: translateX(5px);
-        }
-
-        /* Glitchy Checkbox */
-        .custom-checkbox {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            transition: 0.2s;
-        }
-
-        .task-item.completed .custom-checkbox {
-            border-color: var(--neon-green);
-            background: rgba(10, 255, 0, 0.1);
-            box-shadow: 0 0 10px rgba(10, 255, 0, 0.2);
-        }
-
-        .custom-checkbox i {
-            display: none;
-            color: var(--neon-green);
-            font-size: 0.8rem;
-        }
-
-        .task-item.completed .custom-checkbox i { display: block; }
-
-        .task-text {
-            color: var(--text-main);
-            font-size: 0.95rem;
-            transition: 0.2s;
-        }
-
-        .task-item.completed .task-text {
-            color: #444;
-            text-decoration: line-through;
-        }
-
-        /* Delete Button */
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #444;
-            cursor: pointer;
-            padding: 5px;
-            opacity: 0;
-            transition: 0.2s;
-        }
-
-        .task-item:hover .delete-btn { opacity: 1; }
-        .delete-btn:hover { color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
-
-        /* --- FOOTER --- */
-        .reset-btn {
-            display: block;
-            margin: 60px auto;
-            background: transparent;
-            border: 1px solid #333;
-            color: #444;
-            padding: 10px 30px;
-            font-family: var(--font-code);
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .reset-btn:hover { border-color: var(--neon-red); color: var(--neon-red); }
-
-        /* Animations */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .input-group { flex-direction: column; align-items: stretch; }
-            .input-group::before { display: none; }
-        }
-    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
-    <div class="container">
-        <header>
-            <h1>Robotics Protocol</h1>
-            <p class="subtitle">Trajectory: Zero to Hero /// Target: 12 Months</p>
-            
-            <div class="progress-box">
-                <div class="progress-bar">
-                    <div id="progressBar" class="progress-fill"></div>
-                </div>
-                <div class="progress-stats">
-                    <span id="progressPercent">SYSTEM_LOAD: 0%</span>
-                    <span id="progressCount">TASKS: 0/0</span>
-                </div>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>FLOW_BOARD</h2>
+                <div id="authStatus" class="status-indicator">● OFFLINE</div>
             </div>
-        </header>
+            
+            <nav id="navControls" style="display:none;">
+                <button class="btn-new" onclick="openTask()">＋ INITIALIZE_TASK</button>
+            </nav>
 
-        <div class="input-group">
-            <input type="text" id="taskInput" placeholder="Enter new directive..." onkeypress="handleEnter(event)">
-            <select id="phaseSelect">
-                <option value="phase1">PHASE_1: FOUNDATIONS</option>
-                <option value="phase2">PHASE_2: ROS_CORE</option>
-                <option value="phase3">PHASE_3: EMBEDDED_HW</option>
-                <option value="phase4">PHASE_4: DEPLOYMENT</option>
-            </select>
-            <button class="add-btn" onclick="addTask()">EXECUTE</button>
-        </div>
+            <div class="auth-section">
+                <button id="loginBtn" class="btn-secondary" onclick="toggleAuth()">LOGIN WITH GOOGLE</button>
+            </div>
+        </aside>
 
-        <div id="app"></div>
+        <main>
+            <header>
+                <div class="header-title">
+                    <h1 id="userGreeting">WELCOME_ANON</h1>
+                    <p id="systemLog">// WAITING_FOR_AUTH...</p>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span id="total">00</span>
+                        <label>TOTAL_LOAD</label>
+                    </div>
+                    <div class="stat-item">
+                        <span id="done" class="cyan-text">00</span>
+                        <label>SYNCED</label>
+                    </div>
+                </div>
+            </header>
 
-        <button class="reset-btn" onclick="resetToDefault()">[ PURGE_DATA ]</button>
+            <section id="board" class="board-grid"></section>
+        </main>
     </div>
-    
-    <script>
-        // --- JAVASCRIPT CONTROLLER ---
-
-        const defaultData = [
-            // Phase 1
-            { id: 1, text: "Python: Basics & OOP Structure", phase: "phase1", completed: false },
-            { id: 2, text: "Python: Multithreading Protocols", phase: "phase1", completed: false },
-            { id: 3, text: "C++: Pointers & Memory Allocation", phase: "phase1", completed: false },
-            { id: 4, text: "Linux: Shell & CLI Mastery", phase: "phase1", completed: false },
-            { id: 5, text: "Git: Branching & PR Workflows", phase: "phase1", completed: false },
-            // Phase 2
-            { id: 6, text: "ROS 2: Node Lifecycle Management", phase: "phase2", completed: false },
-            { id: 7, text: "ROS 2: Topics, Services & Actions", phase: "phase2", completed: false },
-            { id: 8, text: "Sim: Differential Drive Robot (Gazebo)", phase: "phase2", completed: false },
-            { id: 9, text: "Theory: Kinematics & TF2", phase: "phase2", completed: false },
-            // Phase 3
-            { id: 10, text: "MCU: Bare Metal + HAL (STM32/ESP)", phase: "phase3", completed: false },
-            { id: 11, text: "Comms: UART / I2C / CAN Bus", phase: "phase3", completed: false },
-            { id: 12, text: "Control: Motor PID Implementation", phase: "phase3", completed: false },
-            // Phase 4
-            { id: 13, text: "Nav2: Autonomous Navigation Stack", phase: "phase4", completed: false },
-            { id: 14, text: "CV: Sensor Fusion (LiDAR + Camera)", phase: "phase4", completed: false },
-            { id: 15, text: "Final: Autonomous Obstacle Avoidance", phase: "phase4", completed: false },
-            { id: 16, text: "Job: Publish Portfolio to GitHub", phase: "phase4", completed: false }
-        ];
-
-        let tasks = [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTasks();
-            renderTasks();
-            updateProgress();
-        });
-
-        function handleEnter(e) { if(e.key === 'Enter') addTask(); }
-
-        function loadTasks() {
-            const saved = localStorage.getItem('roboticsTasks_v4');
-            if (saved) { tasks = JSON.parse(saved); } 
-            else { tasks = JSON.parse(JSON.stringify(defaultData)); }
-        }
-
-        function saveTasks() {
-            localStorage.setItem('roboticsTasks_v4', JSON.stringify(tasks));
-            updateProgress();
-        }
-
-        function renderTasks() {
-            const app = document.getElementById('app');
-            app.innerHTML = '';
-
-            const phases = {
-                phase1: "/// PHASE 1: FOUNDATIONS",
-                phase2: "/// PHASE 2: ROS 2 CORE",
-                phase3: "/// PHASE 3: EMBEDDED SYSTEMS",
-                phase4: "/// PHASE 4: ADVANCED DEPLOYMENT"
-            };
-
-            for (const [key, title] of Object.entries(phases)) {
-                const phaseTasks = tasks.filter(t => t.phase === key);
-                
-                const section = document.createElement('div');
-                section.className = 'phase-section';
-                section.innerHTML = `<div class="phase-header">${title}</div>`;
-                
-                phaseTasks.forEach(task => {
-                    const item = document.createElement('div');
-                    item.className = `task-item ${task.completed ? 'completed' : ''}`;
-                    item.onclick = (e) => {
-                        if(!e.target.closest('.delete-btn')) toggleTask(task.id);
-                    };
-
-                    item.innerHTML = `
-                        <div style="display:flex; align-items:center; flex:1;">
-                            <div class="custom-checkbox"><i class="fas fa-check"></i></div>
-                            <span class="task-text">${task.text}</span>
-                        </div>
-                        <button class="delete-btn" onclick="deleteTask(${task.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    section.appendChild(item);
-                });
-                app.appendChild(section);
-            }
-        }
-
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            if(confirm('CONFIRM DELETION?')) {
-                tasks = tasks.filter(t => t.id !== id);
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function addTask() {
-            const input = document.getElementById('taskInput');
-            const select = document.getElementById('phaseSelect');
-            const text = input.value.trim();
-            
-            if (text) {
-                const newTask = {
-                    id: Date.now(),
-                    text: text,
-                    phase: select.value,
-                    completed: false
-                };
-                tasks.push(newTask);
-                input.value = '';
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function resetToDefault() {
-            if(confirm("WARNING: ALL DATA WILL BE PURGED. PROCEED?")) {
-                tasks = JSON.parse(JSON.stringify(defaultData));
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function updateProgress() {
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.completed).length;
-            const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-            
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressPercent').innerText = `SYSTEM_LOAD: ${percent}%`;
-            document.getElementById('progressCount').innerText = `[ ${completed} / ${total} ]`;
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
