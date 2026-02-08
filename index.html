@@ -3,52 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowBoard // CLOUD_OS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>CORE // Robotics Tracker</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app">
-        <aside class="sidebar">
-            <div class="brand">
-                <h2>FLOW_BOARD</h2>
-                <div id="authStatus" class="status-indicator">● OFFLINE</div>
-            </div>
-            
-            <nav id="navControls" style="display:none;">
-                <button class="btn-new" onclick="openTask()">＋ INITIALIZE_TASK</button>
-            </nav>
-
-            <div class="auth-section">
-                <button id="loginBtn" class="btn-secondary" onclick="toggleAuth()">LOGIN WITH GOOGLE</button>
-            </div>
-        </aside>
-
-        <main>
-            <header>
-                <div class="header-title">
-                    <h1 id="userGreeting">WELCOME_ANON</h1>
-                    <p id="systemLog">// WAITING_FOR_AUTH...</p>
+    <div class="container">
+        <header>
+            <h1>System.Path(Robotics)</h1>
+            <div class="progress-container">
+                <div class="progress-bar-bg">
+                    <div id="progressBar" class="progress-bar"></div>
                 </div>
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span id="total">00</span>
-                        <label>TOTAL_LOAD</label>
-                    </div>
-                    <div class="stat-item">
-                        <span id="done" class="cyan-text">00</span>
-                        <label>SYNCED</label>
-                    </div>
-                </div>
-            </header>
+                <p id="progressText">INITIALIZING SYSTEM...</p>
+            </div>
+        </header>
 
-            <section id="board" class="board-grid"></section>
-        </main>
+        <div class="input-section">
+            <input type="text" id="taskInput" placeholder="> Input new objective...">
+            <select id="phaseSelect">
+                <option value="phase1">PHASE I: FOUNDATIONS</option>
+                <option value="phase2">PHASE II: ROS 2</option>
+                <option value="phase3">PHASE III: EMBEDDED</option>
+                <option value="phase4">PHASE IV: ADVANCED</option>
+            </select>
+            <button id="addTaskBtn">EXECUTE</button>
+        </div>
+
+        <main id="app"></main>
+
+        <div class="settings">
+            <button id="resetBtn" class="danger-btn">WIPE SYSTEM DATA</button>
+        </div>
     </div>
-    <script src="app.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
