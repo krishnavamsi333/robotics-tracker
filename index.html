@@ -11,7 +11,20 @@
 <body>
     <div class="container">
         <header>
-            <h1>System.Path(Robotics)</h1>
+            <div class="header-flex">
+                <h1>System.Path(Robotics)</h1>
+                <div class="header-actions">
+                    <button id="exportBtn" class="icon-btn" title="Export Data">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button id="importBtn" class="icon-btn" title="Import Data">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <button id="themeToggle" class="icon-btn" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
             <div class="progress-container">
                 <div class="progress-bar-bg">
                     <div id="progressBar" class="progress-bar"></div>
@@ -20,13 +33,25 @@
             </div>
         </header>
 
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="> Search tasks...">
+            <button id="clearSearchBtn" class="icon-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
         <div class="input-section">
-            <input type="text" id="taskInput" placeholder="> Input new objective...">
+            <input type="text" id="taskInput" placeholder="> Input new objective... (Press Enter)">
             <select id="phaseSelect">
                 <option value="phase1">PHASE I: FOUNDATIONS</option>
                 <option value="phase2">PHASE II: ROS 2</option>
                 <option value="phase3">PHASE III: EMBEDDED</option>
                 <option value="phase4">PHASE IV: ADVANCED</option>
+            </select>
+            <select id="prioritySelect">
+                <option value="normal">NORMAL</option>
+                <option value="high">HIGH</option>
+                <option value="low">LOW</option>
             </select>
             <button id="addTaskBtn">EXECUTE</button>
         </div>
@@ -34,9 +59,20 @@
         <main id="app"></main>
 
         <div class="settings">
-            <button id="resetBtn" class="danger-btn">WIPE SYSTEM DATA</button>
+            <button id="undoBtn" class="secondary-btn" disabled>
+                <i class="fas fa-undo"></i> UNDO
+            </button>
+            <button id="resetBtn" class="danger-btn">
+                <i class="fas fa-trash"></i> WIPE SYSTEM DATA
+            </button>
         </div>
     </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+    
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
     
     <script src="script.js"></script>
 </body>
