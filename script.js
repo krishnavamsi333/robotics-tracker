@@ -1,30 +1,31 @@
 const defaultData = [
-    { id: 1, text: "Python: Basics & OOP", phase: "phase1", completed: false, priority: "high" },
-    { id: 2, text: "C++: Pointers & Memory", phase: "phase1", completed: false, priority: "high" },
-    { id: 3, text: "Linux: CLI & Shell Scripting", phase: "phase1", completed: false, priority: "normal" },
-    { id: 4, text: "Git: Version Control", phase: "phase1", completed: false, priority: "normal" },
-    { id: 5, text: "Data Structures & Algorithms", phase: "phase1", completed: false, priority: "high" },
-    { id: 6, text: "Math: Linear Algebra & Calculus", phase: "phase1", completed: false, priority: "normal" },
+    { id: 1, text: "Python: Basics & OOP", phase: "phase1", completed: false, priority: "high", logEntries: [] },
+    { id: 2, text: "C++: Pointers & Memory", phase: "phase1", completed: false, priority: "high", logEntries: [] },
+    { id: 3, text: "Linux: CLI & Shell Scripting", phase: "phase1", completed: false, priority: "normal", logEntries: [] },
+    { id: 4, text: "Git: Version Control", phase: "phase1", completed: false, priority: "normal", logEntries: [] },
+    { id: 5, text: "Data Structures & Algorithms", phase: "phase1", completed: false, priority: "high", logEntries: [] },
+    { id: 6, text: "Math: Linear Algebra & Calculus", phase: "phase1", completed: false, priority: "normal", logEntries: [] },
     
-    { id: 7, text: "ROS 2: Topics & Services", phase: "phase2", completed: false, priority: "high" },
-    { id: 8, text: "ROS 2: Actions & Parameters", phase: "phase2", completed: false, priority: "normal" },
-    { id: 9, text: "URDF & Robot Modeling", phase: "phase2", completed: false, priority: "normal" },
-    { id: 10, text: "Gazebo Simulation", phase: "phase2", completed: false, priority: "normal" },
-    { id: 11, text: "TF2: Coordinate Transforms", phase: "phase2", completed: false, priority: "high" },
+    { id: 7, text: "ROS 2: Topics & Services", phase: "phase2", completed: false, priority: "high", logEntries: [] },
+    { id: 8, text: "ROS 2: Actions & Parameters", phase: "phase2", completed: false, priority: "normal", logEntries: [] },
+    { id: 9, text: "URDF & Robot Modeling", phase: "phase2", completed: false, priority: "normal", logEntries: [] },
+    { id: 10, text: "Gazebo Simulation", phase: "phase2", completed: false, priority: "normal", logEntries: [] },
+    { id: 11, text: "TF2: Coordinate Transforms", phase: "phase2", completed: false, priority: "high", logEntries: [] },
     
-    { id: 12, text: "UART, I2C, SPI, CAN", phase: "phase3", completed: false, priority: "high" },
-    { id: 13, text: "Microcontroller Programming", phase: "phase3", completed: false, priority: "high" },
-    { id: 14, text: "Sensor Integration", phase: "phase3", completed: false, priority: "normal" },
-    { id: 15, text: "Motor Control & PWM", phase: "phase3", completed: false, priority: "normal" },
+    { id: 12, text: "UART, I2C, SPI, CAN", phase: "phase3", completed: false, priority: "high", logEntries: [] },
+    { id: 13, text: "Microcontroller Programming", phase: "phase3", completed: false, priority: "high", logEntries: [] },
+    { id: 14, text: "Sensor Integration", phase: "phase3", completed: false, priority: "normal", logEntries: [] },
+    { id: 15, text: "Motor Control & PWM", phase: "phase3", completed: false, priority: "normal", logEntries: [] },
     
-    { id: 16, text: "Nav2: Autonomous Pathing", phase: "phase4", completed: false, priority: "high" },
-    { id: 17, text: "Computer Vision: OpenCV", phase: "phase4", completed: false, priority: "high" },
-    { id: 18, text: "SLAM: Mapping & Localization", phase: "phase4", completed: false, priority: "high" },
-    { id: 19, text: "Machine Learning Basics", phase: "phase4", completed: false, priority: "normal" },
-    { id: 20, text: "ROS 2 Control Framework", phase: "phase4", completed: false, priority: "normal" }
+    { id: 16, text: "Nav2: Autonomous Pathing", phase: "phase4", completed: false, priority: "high", logEntries: [] },
+    { id: 17, text: "Computer Vision: OpenCV", phase: "phase4", completed: false, priority: "high", logEntries: [] },
+    { id: 18, text: "SLAM: Mapping & Localization", phase: "phase4", completed: false, priority: "high", logEntries: [] },
+    { id: 19, text: "Machine Learning Basics", phase: "phase4", completed: false, priority: "normal", logEntries: [] },
+    { id: 20, text: "ROS 2 Control Framework", phase: "phase4", completed: false, priority: "normal", logEntries: [] }
 ];
 
 let tasks = [];
+let meetings = [];
 let history = [];
 let searchQuery = '';
 
@@ -40,8 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
     loadTheme();
     renderTasks();
+    renderMeetings();
     updateProgress();
     setupEventListeners();
+    
+    // Set default date and time for meeting form
+    const now = new Date();
+    document.getElementById('meetingDate').valueAsDate = now;
+    document.getElementById('meetingTime').value = now.toTimeString().slice(0, 5);
 });
 
 function setupEventListeners() {
@@ -77,6 +84,11 @@ function setupEventListeners() {
     // Theme toggle
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
+    // Meeting buttons
+    document.getElementById('addMeetingBtn').addEventListener('click', showMeetingForm);
+    document.getElementById('saveMeetingBtn').addEventListener('click', saveMeeting);
+    document.getElementById('cancelMeetingBtn').addEventListener('click', hideMeetingForm);
+
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         // Ctrl/Cmd + Z for undo
@@ -90,6 +102,31 @@ function setupEventListeners() {
 function loadTasks() {
     const saved = localStorage.getItem('roboticsTasks');
     tasks = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
+    
+    // Load meetings
+    const savedMeetings = localStorage.getItem('roboticsMeetings');
+    meetings = savedMeetings ? JSON.parse(savedMeetings) : [];
+    
+    // Migrate old 'notes' field to 'logEntries' if needed
+    tasks.forEach(task => {
+        if (!task.logEntries) {
+            task.logEntries = [];
+        }
+        // Migrate old notes to first log entry if exists
+        if (task.notes && task.notes.trim() !== '' && task.logEntries.length === 0) {
+            task.logEntries.push({
+                id: Date.now(),
+                date: new Date().toISOString(),
+                text: task.notes
+            });
+            delete task.notes;
+        }
+    });
+    
+    // Save migrated data
+    if (saved) {
+        localStorage.setItem('roboticsTasks', JSON.stringify(tasks));
+    }
 }
 
 function saveTasks() {
@@ -163,16 +200,100 @@ function renderTasks() {
                 const item = document.createElement('div');
                 item.className = `task-item ${task.completed ? 'completed' : ''} priority-${task.priority || 'normal'}`;
                 
-                const priorityBadge = task.priority && task.priority !== 'normal' 
-                    ? `<span class="priority-badge ${task.priority}">${task.priority}</span>` 
-                    : '';
+                const priority = task.priority || 'normal';
+                let priorityBadge = '';
+                
+                // Only show badges for HIGH and LOW priority
+                if (priority === 'high') {
+                    priorityBadge = `<span class="priority-badge high"><i class="fas fa-exclamation-circle"></i> HIGH</span>`;
+                } else if (priority === 'low') {
+                    priorityBadge = `<span class="priority-badge low"><i class="fas fa-arrow-down"></i> LOW</span>`;
+                }
+
+                const hasLogs = task.logEntries && task.logEntries.length > 0;
+                const logsIcon = hasLogs ? `<i class="fas fa-history" style="color: var(--accent-yellow); margin-left: 5px;" title="${task.logEntries.length} log entries"></i>` : '';
+
+                // Build log entries HTML
+                let logsHTML = '';
+                if (hasLogs) {
+                    const sortedLogs = [...task.logEntries].sort((a, b) => 
+                        new Date(b.date) - new Date(a.date)
+                    );
+                    
+                    logsHTML = `
+                        <div class="task-logs" id="logs-${task.id}" style="display: none;">
+                            ${sortedLogs.map(log => {
+                                const date = new Date(log.date);
+                                const dateStr = date.toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric', 
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                return `
+                                    <div class="log-entry">
+                                        <div class="log-header">
+                                            <span class="log-date"><i class="fas fa-calendar-alt"></i> ${dateStr}</span>
+                                            <button class="log-delete-btn" onclick="event.stopPropagation(); deleteLogEntry(${task.id}, ${log.id})" title="Delete entry">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <div class="log-text">${log.text}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="log-controls">
+                            <span class="task-logs-toggle" onclick="event.stopPropagation(); toggleLogs(${task.id})">
+                                <span id="toggle-text-${task.id}">Show history (${task.logEntries.length})</span>
+                            </span>
+                            <button class="add-log-btn" onclick="event.stopPropagation(); showLogInput(${task.id})" title="Add new log entry">
+                                <i class="fas fa-plus"></i> Add Entry
+                            </button>
+                        </div>
+                        <div class="log-input-container" id="log-input-${task.id}" style="display: none;">
+                            <textarea id="log-textarea-${task.id}" placeholder="What did you work on today?..." rows="3"></textarea>
+                            <div class="log-input-actions">
+                                <button class="log-save-btn" onclick="event.stopPropagation(); saveLogEntry(${task.id})">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="log-cancel-btn" onclick="event.stopPropagation(); hideLogInput(${task.id})">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    logsHTML = `
+                        <div class="log-controls">
+                            <button class="add-log-btn" onclick="event.stopPropagation(); showLogInput(${task.id})" title="Add first log entry">
+                                <i class="fas fa-plus"></i> Add Entry
+                            </button>
+                        </div>
+                        <div class="log-input-container" id="log-input-${task.id}" style="display: none;">
+                            <textarea id="log-textarea-${task.id}" placeholder="What did you work on today?..." rows="3"></textarea>
+                            <div class="log-input-actions">
+                                <button class="log-save-btn" onclick="event.stopPropagation(); saveLogEntry(${task.id})">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="log-cancel-btn" onclick="event.stopPropagation(); hideLogInput(${task.id})">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 item.innerHTML = `
                     <div class="task-content" onclick="toggleTask(${task.id})">
-                        <div class="task-checkbox">
-                            ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                        <div class="task-main">
+                            <div class="task-checkbox">
+                                ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                            </div>
+                            <span class="task-text">${highlightSearch(task.text)} ${logsIcon}</span>
                         </div>
-                        <span class="task-text">${highlightSearch(task.text)}</span>
+                        ${logsHTML}
                     </div>
                     <div class="task-actions">
                         ${priorityBadge}
@@ -205,6 +326,73 @@ window.toggleTask = function(id) {
     }
 };
 
+window.toggleLogs = function(id) {
+    const logsDiv = document.getElementById(`logs-${id}`);
+    const toggleText = document.getElementById(`toggle-text-${id}`);
+    const task = tasks.find(t => t.id === id);
+    
+    if (logsDiv.style.display === 'none') {
+        logsDiv.style.display = 'block';
+        toggleText.textContent = `Hide history (${task.logEntries.length})`;
+    } else {
+        logsDiv.style.display = 'none';
+        toggleText.textContent = `Show history (${task.logEntries.length})`;
+    }
+};
+
+window.showLogInput = function(id) {
+    const inputContainer = document.getElementById(`log-input-${id}`);
+    const textarea = document.getElementById(`log-textarea-${id}`);
+    inputContainer.style.display = 'block';
+    textarea.focus();
+};
+
+window.hideLogInput = function(id) {
+    const inputContainer = document.getElementById(`log-input-${id}`);
+    const textarea = document.getElementById(`log-textarea-${id}`);
+    inputContainer.style.display = 'none';
+    textarea.value = '';
+};
+
+window.saveLogEntry = function(id) {
+    const textarea = document.getElementById(`log-textarea-${id}`);
+    const text = textarea.value.trim();
+    
+    if (!text) {
+        showToast('Please enter some text', 'error');
+        return;
+    }
+    
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+        if (!task.logEntries) {
+            task.logEntries = [];
+        }
+        
+        task.logEntries.push({
+            id: Date.now(),
+            date: new Date().toISOString(),
+            text: text
+        });
+        
+        saveTasks();
+        renderTasks();
+        showToast('Log entry added!', 'success');
+    }
+};
+
+window.deleteLogEntry = function(taskId, logId) {
+    if (confirm('Delete this log entry?')) {
+        const task = tasks.find(t => t.id === taskId);
+        if (task) {
+            task.logEntries = task.logEntries.filter(log => log.id !== logId);
+            saveTasks();
+            renderTasks();
+            showToast('Log entry deleted', 'success');
+        }
+    }
+};
+
 window.deleteTask = function(id) {
     if (confirm("Delete this task?")) {
         tasks = tasks.filter(t => t.id !== id);
@@ -216,6 +404,7 @@ window.deleteTask = function(id) {
 
 function addTask() {
     const input = document.getElementById('taskInput');
+    const notesInput = document.getElementById('notesInput');
     const select = document.getElementById('phaseSelect');
     const prioritySelect = document.getElementById('prioritySelect');
     
@@ -226,15 +415,29 @@ function addTask() {
         return;
     }
     
-    tasks.push({
+    const newTask = {
         id: Date.now(),
         text: taskText,
         phase: select.value,
         priority: prioritySelect.value,
+        logEntries: [],
         completed: false
-    });
+    };
+    
+    // If there's an initial note, add it as first log entry
+    const initialNote = notesInput.value.trim();
+    if (initialNote) {
+        newTask.logEntries.push({
+            id: Date.now(),
+            date: new Date().toISOString(),
+            text: initialNote
+        });
+    }
+    
+    tasks.push(newTask);
     
     input.value = '';
+    notesInput.value = '';
     prioritySelect.value = 'normal';
     saveTasks();
     renderTasks();
@@ -253,17 +456,25 @@ function updateProgress() {
 }
 
 function resetToDefault() {
-    if(confirm("⚠️ This will delete all custom tasks and reset to defaults. Continue?")) {
+    if(confirm("⚠️ This will delete all custom tasks and meetings, and reset to defaults. Continue?")) {
         tasks = JSON.parse(JSON.stringify(defaultData));
+        meetings = [];
         history = [];
         saveTasks();
+        saveMeetings();
         renderTasks();
+        renderMeetings();
         showToast('System reset to defaults', 'success');
     }
 }
 
 function exportData() {
-    const dataStr = JSON.stringify(tasks, null, 2);
+    const exportObj = {
+        tasks: tasks,
+        meetings: meetings,
+        exportDate: new Date().toISOString()
+    };
+    const dataStr = JSON.stringify(exportObj, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
@@ -283,16 +494,29 @@ function importData(event) {
         try {
             const imported = JSON.parse(e.target.result);
             
-            // Validate data structure
-            if (!Array.isArray(imported)) {
+            // Handle both old format (array) and new format (object with tasks & meetings)
+            let importedTasks, importedMeetings;
+            
+            if (Array.isArray(imported)) {
+                // Old format - just tasks
+                importedTasks = imported;
+                importedMeetings = [];
+            } else if (imported.tasks) {
+                // New format - tasks and meetings
+                importedTasks = imported.tasks || [];
+                importedMeetings = imported.meetings || [];
+            } else {
                 throw new Error('Invalid data format');
             }
 
-            if (confirm('Import this data? Current tasks will be replaced.')) {
-                tasks = imported;
+            if (confirm('Import this data? Current tasks and meetings will be replaced.')) {
+                tasks = importedTasks;
+                meetings = importedMeetings;
                 history = [];
                 saveTasks();
+                saveMeetings();
                 renderTasks();
+                renderMeetings();
                 showToast('Data imported successfully!', 'success');
             }
         } catch (error) {
@@ -334,3 +558,127 @@ function showToast(message, type = 'success') {
         toast.classList.remove('show');
     }, 3000);
 }
+
+// ========== MEETING MINUTES FUNCTIONS ==========
+
+function showMeetingForm() {
+    const form = document.getElementById('meetingForm');
+    form.style.display = 'block';
+    document.getElementById('meetingTitle').focus();
+    
+    // Set current date and time
+    const now = new Date();
+    document.getElementById('meetingDate').valueAsDate = now;
+    document.getElementById('meetingTime').value = now.toTimeString().slice(0, 5);
+}
+
+function hideMeetingForm() {
+    const form = document.getElementById('meetingForm');
+    form.style.display = 'none';
+    
+    // Clear form
+    document.getElementById('meetingTitle').value = '';
+    document.getElementById('meetingNotes').value = '';
+}
+
+function saveMeeting() {
+    const title = document.getElementById('meetingTitle').value.trim();
+    const date = document.getElementById('meetingDate').value;
+    const time = document.getElementById('meetingTime').value;
+    const notes = document.getElementById('meetingNotes').value.trim();
+    
+    if (!title) {
+        showToast('Please enter a meeting title', 'error');
+        return;
+    }
+    
+    if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+    }
+    
+    const meeting = {
+        id: Date.now(),
+        title: title,
+        date: date,
+        time: time || '00:00',
+        notes: notes,
+        createdAt: new Date().toISOString()
+    };
+    
+    meetings.push(meeting);
+    saveMeetings();
+    renderMeetings();
+    hideMeetingForm();
+    showToast('Meeting saved!', 'success');
+}
+
+function saveMeetings() {
+    localStorage.setItem('roboticsMeetings', JSON.stringify(meetings));
+}
+
+function renderMeetings() {
+    const container = document.getElementById('meetingsList');
+    
+    if (meetings.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-clipboard"></i>
+                <p>No meetings recorded yet. Click "NEW MEETING" to add one.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Sort meetings by date (newest first)
+    const sortedMeetings = [...meetings].sort((a, b) => {
+        const dateA = new Date(a.date + ' ' + a.time);
+        const dateB = new Date(b.date + ' ' + b.time);
+        return dateB - dateA;
+    });
+    
+    container.innerHTML = sortedMeetings.map(meeting => {
+        const meetingDate = new Date(meeting.date + ' ' + meeting.time);
+        const dateStr = meetingDate.toLocaleDateString('en-US', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        const timeStr = meetingDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        return `
+            <div class="meeting-card">
+                <div class="meeting-header">
+                    <div class="meeting-title-row">
+                        <h3><i class="fas fa-calendar-check"></i> ${meeting.title}</h3>
+                        <button class="delete-meeting-btn" onclick="deleteMeeting(${meeting.id})" title="Delete meeting">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="meeting-datetime">
+                        <span class="meeting-date"><i class="fas fa-calendar"></i> ${dateStr}</span>
+                        <span class="meeting-time"><i class="fas fa-clock"></i> ${timeStr}</span>
+                    </div>
+                </div>
+                ${meeting.notes ? `
+                    <div class="meeting-notes">
+                        ${meeting.notes.split('\n').map(line => `<p>${line}</p>`).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+window.deleteMeeting = function(id) {
+    if (confirm('Delete this meeting record?')) {
+        meetings = meetings.filter(m => m.id !== id);
+        saveMeetings();
+        renderMeetings();
+        showToast('Meeting deleted', 'success');
+    }
+};

@@ -138,8 +138,8 @@ header h1 {
 
 /* Input Grid */
 .input-section {
-    display: grid;
-    grid-template-columns: 1fr auto auto auto;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 40px;
     padding: 20px;
@@ -149,7 +149,21 @@ header h1 {
     transition: background-color 0.3s ease;
 }
 
-input, select, button {
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 10px;
+}
+
+.notes-row {
+    display: flex;
+}
+
+.notes-row textarea {
+    width: 100%;
+}
+
+input, select, button, textarea {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-color);
@@ -160,7 +174,12 @@ input, select, button {
     transition: all 0.3s ease;
 }
 
-input:focus, select:focus {
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-glow);
     box-shadow: 0 0 0 2px rgba(78, 201, 176, 0.2);
@@ -314,14 +333,17 @@ button:disabled {
 
 .task-item.priority-high {
     border-left-color: var(--accent-red);
+    border-left-width: 4px;
 }
 
 .task-item.priority-normal {
     border-left-color: var(--accent-blue);
+    border-left-width: 4px;
 }
 
 .task-item.priority-low {
     border-left-color: var(--text-muted);
+    border-left-width: 4px;
 }
 
 .task-item.completed {
@@ -338,8 +360,212 @@ button:disabled {
     cursor: pointer;
     user-select: none;
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-main {
+    display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.task-notes {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding-left: 28px;
+    margin-top: 5px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    border-left: 2px solid var(--border-color);
+    padding-left: 10px;
+    margin-left: 28px;
+}
+
+.task-logs {
+    margin-top: 10px;
+    padding-left: 28px;
+    border-left: 2px solid var(--primary-glow);
+    margin-left: 28px;
+}
+
+.log-entry {
+    background: var(--card-bg);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.log-entry:hover {
+    border-color: var(--primary-glow);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.log-date {
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    font-weight: bold;
+}
+
+.log-date i {
+    margin-right: 5px;
+}
+
+.log-delete-btn {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.log-delete-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.log-text {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.log-controls {
+    margin-top: 8px;
+    padding-left: 28px;
+    margin-left: 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.task-logs-toggle {
+    color: var(--accent-blue);
+    font-size: 0.7rem;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+}
+
+.task-logs-toggle:hover {
+    color: var(--primary-glow);
+}
+
+.add-log-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-glow);
+    color: var(--primary-glow);
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.add-log-btn:hover {
+    background: var(--primary-glow);
+    color: #000;
+}
+
+.log-input-container {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-left: 28px;
+}
+
+.log-input-container textarea {
+    width: 100%;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px;
+    font-family: inherit;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.log-input-container textarea:focus {
+    outline: none;
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 0 2px rgba(78, 201, 176, 0.2);
+}
+
+.log-input-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.log-save-btn {
+    background: var(--primary-glow);
+    color: #000;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.log-save-btn:hover {
+    box-shadow: 0 0 10px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+.log-cancel-btn {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.log-cancel-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent-red);
+}
+
+.task-notes-toggle {
+    color: var(--accent-blue);
+    font-size: 0.7rem;
+    margin-left: 28px;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+    margin-top: 2px;
+}
+
+.task-notes-toggle:hover {
+    color: var(--primary-glow);
 }
 
 .task-checkbox {
@@ -383,26 +609,29 @@ button:disabled {
 }
 
 .priority-badge {
-    font-size: 0.65rem;
-    padding: 2px 6px;
-    border-radius: 3px;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 4px;
     text-transform: uppercase;
     font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .priority-badge.high {
     background: var(--accent-red);
-    color: var(--bg-color);
+    color: #fff;
 }
 
 .priority-badge.normal {
     background: var(--accent-blue);
-    color: var(--bg-color);
+    color: #fff;
 }
 
 .priority-badge.low {
     background: var(--text-muted);
-    color: var(--bg-color);
+    color: #fff;
 }
 
 /* Settings Section */
@@ -416,6 +645,215 @@ button:disabled {
 .settings button {
     flex: 1;
     min-width: 200px;
+}
+
+/* ========== MEETING MINUTES SECTION ========== */
+
+.meetings-section {
+    margin-top: 50px;
+    padding: 30px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-glow);
+}
+
+.section-header h2 {
+    font-size: 1.2rem;
+    color: var(--primary-glow);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-header h2 i {
+    margin-right: 10px;
+}
+
+.add-meeting-btn {
+    background: var(--primary-glow);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.add-meeting-btn:hover {
+    box-shadow: 0 0 20px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.meeting-input-form {
+    background: var(--bg-color);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.meeting-input-form input,
+.meeting-input-form textarea {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.meeting-input-form input[type="date"],
+.meeting-input-form input[type="time"] {
+    width: calc(50% - 6px);
+    display: inline-block;
+}
+
+.meeting-input-form input[type="time"] {
+    margin-left: 12px;
+}
+
+.meeting-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.save-meeting-btn {
+    background: var(--primary-glow);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    flex: 1;
+}
+
+.save-meeting-btn:hover {
+    box-shadow: 0 0 15px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+.cancel-meeting-btn {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.cancel-meeting-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent-red);
+}
+
+.meetings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.meeting-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
+}
+
+.meeting-card:hover {
+    border-left-color: var(--primary-glow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transform: translateX(5px);
+}
+
+.meeting-header {
+    margin-bottom: 15px;
+}
+
+.meeting-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.meeting-card h3 {
+    color: var(--primary-glow);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.meeting-card h3 i {
+    margin-right: 8px;
+    color: var(--accent-blue);
+}
+
+.delete-meeting-btn {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.delete-meeting-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.meeting-datetime {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.meeting-date,
+.meeting-time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.meeting-date i,
+.meeting-time i {
+    margin-right: 5px;
+    color: var(--accent-orange);
+}
+
+.meeting-notes {
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.meeting-notes p {
+    margin: 8px 0;
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+.meeting-notes p:empty {
+    display: none;
 }
 
 /* Toast Notification */
@@ -451,7 +889,7 @@ button:disabled {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .input-section {
+    .input-row {
         grid-template-columns: 1fr;
     }
 
@@ -486,6 +924,28 @@ button:disabled {
         left: 20px;
         bottom: 20px;
     }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .add-meeting-btn {
+        width: 100%;
+    }
+
+    .meeting-input-form input[type="date"],
+    .meeting-input-form input[type="time"] {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 12px;
+    }
+
+    .meeting-datetime {
+        flex-direction: column;
+        gap: 8px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -495,7 +955,8 @@ button:disabled {
 
     .input-section,
     .progress-container,
-    .phase-section {
+    .phase-section,
+    .meetings-section {
         padding: 15px;
     }
 }

@@ -41,22 +41,56 @@
         </div>
 
         <div class="input-section">
-            <input type="text" id="taskInput" placeholder="> Input new objective... (Press Enter)">
-            <select id="phaseSelect">
-                <option value="phase1">PHASE I: FOUNDATIONS</option>
-                <option value="phase2">PHASE II: ROS 2</option>
-                <option value="phase3">PHASE III: EMBEDDED</option>
-                <option value="phase4">PHASE IV: ADVANCED</option>
-            </select>
-            <select id="prioritySelect">
-                <option value="normal">NORMAL</option>
-                <option value="high">HIGH</option>
-                <option value="low">LOW</option>
-            </select>
-            <button id="addTaskBtn">EXECUTE</button>
+            <div class="input-row">
+                <input type="text" id="taskInput" placeholder="> Input new objective... (Press Enter)">
+                <select id="phaseSelect">
+                    <option value="phase1">PHASE I: FOUNDATIONS</option>
+                    <option value="phase2">PHASE II: ROS 2</option>
+                    <option value="phase3">PHASE III: EMBEDDED</option>
+                    <option value="phase4">PHASE IV: ADVANCED</option>
+                </select>
+                <select id="prioritySelect">
+                    <option value="normal">NORMAL</option>
+                    <option value="high">HIGH</option>
+                    <option value="low">LOW</option>
+                </select>
+                <button id="addTaskBtn">EXECUTE</button>
+            </div>
+            <div class="notes-row">
+                <textarea id="notesInput" placeholder="> Add initial notes (optional) - you can add more dated entries later..." rows="2"></textarea>
+            </div>
         </div>
 
         <main id="app"></main>
+
+        <!-- Meeting Minutes Section -->
+        <div class="meetings-section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> MEETING MINUTES</h2>
+                <button id="addMeetingBtn" class="add-meeting-btn">
+                    <i class="fas fa-plus"></i> NEW MEETING
+                </button>
+            </div>
+            
+            <div class="meeting-input-form" id="meetingForm" style="display: none;">
+                <input type="text" id="meetingTitle" placeholder="> Meeting title (e.g., Team Standup, Project Review)">
+                <input type="date" id="meetingDate">
+                <input type="time" id="meetingTime">
+                <textarea id="meetingNotes" placeholder="> Meeting notes, action items, decisions..." rows="5"></textarea>
+                <div class="meeting-form-actions">
+                    <button id="saveMeetingBtn" class="save-meeting-btn">
+                        <i class="fas fa-save"></i> SAVE MEETING
+                    </button>
+                    <button id="cancelMeetingBtn" class="cancel-meeting-btn">
+                        CANCEL
+                    </button>
+                </div>
+            </div>
+
+            <div id="meetingsList" class="meetings-list">
+                <!-- Meetings will be rendered here -->
+            </div>
+        </div>
 
         <div class="settings">
             <button id="undoBtn" class="secondary-btn" disabled>
