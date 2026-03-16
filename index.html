@@ -14,8 +14,11 @@
             <div class="header-flex">
                 <h1>System.Path(Robotics)</h1>
                 <div class="header-actions">
-                    <button id="exportBtn" class="icon-btn" title="Export Data">
+                    <button id="exportBtn" class="icon-btn" title="Export JSON">
                         <i class="fas fa-download"></i>
+                    </button>
+                    <button id="exportMdBtn" class="icon-btn" title="Export Markdown">
+                        <i class="fab fa-markdown"></i>
                     </button>
                     <button id="importBtn" class="icon-btn" title="Import Data">
                         <i class="fas fa-upload"></i>
@@ -31,15 +34,58 @@
                 </div>
                 <p id="progressText">INITIALIZING SYSTEM...</p>
             </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-value" id="statTotal">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statDone">0</span>
+                    <span class="stat-label">Done</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value accent-red" id="statOverdue">0</span>
+                    <span class="stat-label">Overdue</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value accent-yellow" id="statHigh">0</span>
+                    <span class="stat-label">High Priority</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value accent-blue" id="statLogs">0</span>
+                    <span class="stat-label">Log Entries</span>
+                </div>
+            </div>
         </header>
 
+        <!-- Search & Filter Bar -->
         <div class="search-section">
-            <input type="text" id="searchInput" placeholder="> Search tasks...">
-            <button id="clearSearchBtn" class="icon-btn">
-                <i class="fas fa-times"></i>
-            </button>
+            <div class="search-input-wrap">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search tasks...">
+                <button id="clearSearchBtn" class="icon-btn clear-search-btn" title="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Done</button>
+                <button class="filter-btn" data-filter="overdue">Overdue</button>
+                <button class="filter-btn" data-filter="high">High Priority</button>
+            </div>
         </div>
 
+        <!-- Tag Filter Row -->
+        <div id="tagFilterRow" class="tag-filter-row" style="display:none;">
+            <span class="tag-filter-label"><i class="fas fa-tag"></i> Filter by tag:</span>
+            <div id="tagFilterChips" class="tag-filter-chips"></div>
+            <button id="clearTagFilter" class="clear-tag-btn" style="display:none;">Clear</button>
+        </div>
+
+        <!-- Add Task -->
         <div class="input-section">
             <div class="input-row">
                 <input type="text" id="taskInput" placeholder="> Input new objective... (Press Enter)">
@@ -56,8 +102,18 @@
                 </select>
                 <button id="addTaskBtn">EXECUTE</button>
             </div>
-            <div class="notes-row">
-                <textarea id="notesInput" placeholder="> Add initial notes (optional) - you can add more dated entries later..." rows="2"></textarea>
+            <div class="input-row-2">
+                <textarea id="notesInput" placeholder="> Initial notes (optional)..." rows="2"></textarea>
+                <div class="meta-inputs">
+                    <div class="meta-field">
+                        <label><i class="fas fa-calendar-alt"></i> Due Date</label>
+                        <input type="date" id="dueDateInput">
+                    </div>
+                    <div class="meta-field">
+                        <label><i class="fas fa-tags"></i> Tags (comma-separated)</label>
+                        <input type="text" id="tagsInput" placeholder="e.g. active, review, blocked">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -67,29 +123,48 @@
         <div class="meetings-section">
             <div class="section-header">
                 <h2><i class="fas fa-users"></i> MEETING MINUTES</h2>
-                <button id="addMeetingBtn" class="add-meeting-btn">
-                    <i class="fas fa-plus"></i> NEW MEETING
-                </button>
+                <div class="meeting-header-actions">
+                    <input type="text" id="meetingSearchInput" placeholder="Search meetings..." class="meeting-search">
+                    <button id="addMeetingBtn" class="add-meeting-btn">
+                        <i class="fas fa-plus"></i> NEW MEETING
+                    </button>
+                </div>
             </div>
-            
+
             <div class="meeting-input-form" id="meetingForm" style="display: none;">
                 <input type="text" id="meetingTitle" placeholder="> Meeting title (e.g., Team Standup, Project Review)">
-                <input type="date" id="meetingDate">
-                <input type="time" id="meetingTime">
+                <div class="meeting-meta-row">
+                    <input type="date" id="meetingDate">
+                    <input type="time" id="meetingTime">
+                    <input type="text" id="meetingTags" placeholder="Tags (optional, comma-separated)">
+                </div>
                 <textarea id="meetingNotes" placeholder="> Meeting notes, action items, decisions..." rows="5"></textarea>
                 <div class="meeting-form-actions">
                     <button id="saveMeetingBtn" class="save-meeting-btn">
                         <i class="fas fa-save"></i> SAVE MEETING
                     </button>
-                    <button id="cancelMeetingBtn" class="cancel-meeting-btn">
-                        CANCEL
-                    </button>
+                    <button id="cancelMeetingBtn" class="cancel-meeting-btn">CANCEL</button>
                 </div>
             </div>
 
-            <div id="meetingsList" class="meetings-list">
-                <!-- Meetings will be rendered here -->
+            <!-- Edit Meeting Form (hidden) -->
+            <div class="meeting-input-form" id="meetingEditForm" style="display: none;">
+                <input type="text" id="editMeetingTitle" placeholder="> Meeting title">
+                <div class="meeting-meta-row">
+                    <input type="date" id="editMeetingDate">
+                    <input type="time" id="editMeetingTime">
+                    <input type="text" id="editMeetingTags" placeholder="Tags (optional)">
+                </div>
+                <textarea id="editMeetingNotes" placeholder="> Meeting notes..." rows="5"></textarea>
+                <div class="meeting-form-actions">
+                    <button id="saveEditMeetingBtn" class="save-meeting-btn">
+                        <i class="fas fa-save"></i> UPDATE MEETING
+                    </button>
+                    <button id="cancelEditMeetingBtn" class="cancel-meeting-btn">CANCEL</button>
+                </div>
             </div>
+
+            <div id="meetingsList" class="meetings-list"></div>
         </div>
 
         <div class="settings">
@@ -102,12 +177,9 @@
         </div>
     </div>
 
-    <!-- Hidden file input for import -->
     <input type="file" id="fileInput" accept=".json" style="display: none;">
-    
-    <!-- Toast notification -->
     <div id="toast" class="toast"></div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
